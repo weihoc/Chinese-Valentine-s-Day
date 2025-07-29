@@ -5,138 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>七夕禮物心理測驗</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; background: #fff8f0; color: #333; }
-    h1, h2 { color: #d26a5c; }
-    .question { margin-bottom: 2em; }
-    button { margin: 10px; padding: 0.5em 1em; background: #d26a5c; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .hidden { display: none; }
-    #restart-btn { margin-top: 3em; background: #888; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fffafc;
+      color: #333;
+      padding: 2em;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #d63384;
+    }
+    .question {
+      margin-bottom: 1.5em;
+    }
+    .result {
+      background-color: #ffe6f0;
+      padding: 1em;
+      margin-top: 2em;
+      border-left: 5px solid #d63384;
+    }
+    .image-placeholder {
+      width: 100%;
+      height: 150px;
+      background-color: #f5f5f5;
+      border: 1px dashed #ccc;
+      margin: 1em 0;
+      text-align: center;
+      line-height: 150px;
+      color: #aaa;
+    }
+    button {
+      background-color: #d63384;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 1em;
+    }
+    button:hover {
+      background-color: #c21868;
+    }
   </style>
 </head>
 <body>
-  <h1>七夕禮物心理測驗</h1>
-  <div id="quiz"></div>
-  <div id="result" class="hidden"></div>
+  <h1>七夕浪漫心理測驗</h1>
+  <form id="quizForm">
+    <div class="question">
+      <h2>1. 七夕情人節即將到來，在這浪漫的氛圍中，下面哪個場景最令你/妳心動？</h2>
+      <div class="image-placeholder">圖片位置保留</div>
+      <label><input type="radio" name="q1" value="海邊沙灘" /> 海邊沙灘，赤腳走過潮濕的浪痕</label><br />
+      <label><input type="radio" name="q1" value="山景夜景" /> 微涼山路，一起看日落與城市燈火</label><br />
+      <label><input type="radio" name="q1" value="老屋咖啡館" /> 老屋咖啡館中，一起寫信給未來的自己</label><br />
+      <label><input type="radio" name="q1" value="河上小船" /> 夜空下，小船上只有你和他/她</label>
+    </div>
+
+    <div class="question">
+      <h2>2. 當你/妳的伴侶來到這心動的約會地點，你會期待收到什麼樣的禮物呢？</h2>
+      <div class="image-placeholder">圖片位置保留</div>
+      <label><input type="radio" name="q2" value="手作心意" /> 有心思的手作，如卡片或情詩</label><br />
+      <label><input type="radio" name="q2" value="默默記得的物品" /> 他/她記得你曾提過卻沒說出口的東西</label><br />
+      <label><input type="radio" name="q2" value="精品小物" /> 精品小物（包包、香水、飾品）</label><br />
+      <label><input type="radio" name="q2" value="旅行體驗" /> 一場說走就走的旅行</label>
+    </div>
+
+    <div class="question">
+      <h2>3. 收到禮物時，你/妳期待當下是什麼感覺？</h2>
+      <div class="image-placeholder">圖片位置保留</div>
+      <label><input type="radio" name="q3" value="細節的驚喜" /> 他/她提到一個你都忘了的小細節</label><br />
+      <label><input type="radio" name="q3" value="簡單踏實" /> 一種雖然不華麗但踏實被愛的感覺</label><br />
+      <label><input type="radio" name="q3" value="假裝不在意" /> 表面平靜但內心小鹿亂撞</label>
+    </div>
+
+    <div class="question">
+      <h2>4. 你覺得情侶相處最重要的是什麼？</h2>
+      <div class="image-placeholder">圖片位置保留</div>
+      <label><input type="radio" name="q4" value="理解與包容" /> 理解與包容，尊重彼此的不同</label><br />
+      <label><input type="radio" name="q4" value="浪漫與驚喜" /> 保持浪漫與驚喜，讓感情持續新鮮</label><br />
+      <label><input type="radio" name="q4" value="溝通與信任" /> 開放溝通，建立深厚信任</label><br />
+      <label><input type="radio" name="q4" value="共同成長" /> 共同成長，一起迎接未來挑戰</label>
+    </div>
+
+    <button type="button" onclick="showResult()">看結果</button>
+    <button type="button" onclick="resetQuiz()">重新測驗</button>
+  </form>
+
+  <div id="result" class="result" style="display:none"></div>
 
   <script>
-    const questions = [
-      {
-        text: "1. 你最喜歡以下哪種約會方式？",
-        options: [
-          { text: "一起海邊看夕陽", tags: ["浪漫", "自然"] },
-          { text: "夜市吃吃喝喝", tags: ["活潑", "熱鬧"] },
-          { text: "高級餐廳約會", tags: ["質感", "儀式感"] },
-          { text: "在家煮飯看電影", tags: ["溫馨", "陪伴"] },
-        ],
-      },
-      {
-        text: "2. 收到什麼會最讓你感動？",
-        options: [
-          { text: "花束加手寫卡片", tags: ["浪漫", "真心"] },
-          { text: "精品小物（包包）", tags: ["質感", "實用", "包包"] },
-          { text: "精品小物（香水）", tags: ["質感", "實用", "香水"] },
-          { text: "精品小物（飾品）", tags: ["質感", "實用", "飾品"] },
-          { text: "精品小物（口紅）", tags: ["質感", "實用", "口紅"] },
-          { text: "精品小物（手錶）", tags: ["質感", "實用", "手錶"] },
-          { text: "神秘驚喜行程", tags: ["冒險", "創意"] },
-          { text: "親手做的東西", tags: ["手作", "溫暖"] },
-        ],
-      },
-      {
-        text: "3. 你在意禮物的哪個面向？",
-        options: [
-          { text: "外觀精緻，拍照好看", tags: ["視覺", "美感"] },
-          { text: "表達心意最重要", tags: ["真心", "情感"] },
-          { text: "實用性高，可以每天用", tags: ["實用"] },
-          { text: "讓人驚喜，意想不到", tags: ["創意", "驚喜"] },
-        ],
-      },
-    ];
-
-    const giftIdeas = [
-      { tags: ["浪漫", "真心"], gift: "永生花束＋手寫卡片", place: "山上觀星或海邊夕陽" },
-      { tags: ["質感", "實用", "包包"], gift: "精品包包", place: "高級餐廳約會" },
-      { tags: ["質感", "實用", "香水"], gift: "精品香水", place: "高級餐廳或香氛體驗課程" },
-      { tags: ["質感", "實用", "飾品"], gift: "設計師飾品", place: "藝術展覽或下午茶約會" },
-      { tags: ["質感", "實用", "口紅"], gift: "精品口紅禮盒", place: "百貨專櫃逛街行程" },
-      { tags: ["質感", "實用", "手錶"], gift: "精品手錶", place: "氣氛良好的晚餐+城市夜景散步" },
-      { tags: ["活潑", "創意"], gift: "DIY 驚喜小禮物或密室脫逃票券", place: "夜市或主題樂園" },
-      { tags: ["溫馨", "手作"], gift: "親手做的蛋糕或日常實用小物", place: "家中布置的浪漫晚餐" },
-      { tags: ["視覺", "美感"], gift: "造型香氛蠟燭、手工飾品", place: "網美咖啡廳拍照約會" },
-      { tags: ["驚喜", "冒險"], gift: "神秘約會行程＋電影票＋夜景行程", place: "祕密行程安排" },
-    ];
-
-    const quizContainer = document.getElementById("quiz");
-    const resultContainer = document.getElementById("result");
-    const userTags = [];
-
-    let currentQ = 0;
-
-    function showQuestion(index) {
-      const q = questions[index];
-      const div = document.createElement("div");
-      div.className = "question";
-
-      const h2 = document.createElement("h2");
-      h2.textContent = q.text;
-      div.appendChild(h2);
-
-      q.options.forEach((opt) => {
-        const btn = document.createElement("button");
-        btn.textContent = opt.text;
-        btn.onclick = () => {
-          userTags.push(...opt.tags);
-          currentQ++;
-          quizContainer.innerHTML = "";
-          if (currentQ < questions.length) {
-            showQuestion(currentQ);
-          } else {
-            showResult();
-          }
-        };
-        div.appendChild(btn);
-      });
-
-      quizContainer.appendChild(div);
-    }
-
     function showResult() {
-      const tagCount = {};
-      userTags.forEach((tag) => {
-        tagCount[tag] = (tagCount[tag] || 0) + 1;
-      });
+      const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+      const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+      const q4 = document.querySelector('input[name="q4"]:checked')?.value;
 
-      const best = giftIdeas
-        .map((idea) => {
-          let score = 0;
-          idea.tags.forEach((tag) => {
-            score += tagCount[tag] || 0;
-          });
-          return { ...idea, score };
-        })
-        .sort((a, b) => b.score - a.score)[0];
+      if (!q1 || !q2 || !q3 || !q4) {
+        alert("請完成所有問題喔！");
+        return;
+      }
 
-      resultContainer.innerHTML = `
-        <h2>🎁 最適合她的七夕禮物是：</h2>
-        <p><strong>禮物建議：</strong>${best.gift}</p>
-        <p><strong>推薦約會地點：</strong>${best.place}</p>
-        <p style="margin-top:2em;color:#666">（根據她的選擇分析得出）</p>
-        <button id="restart-btn">重新來過</button>
+      let gift = '';
+      let personality = '';
+      let growth = '';
+
+      if (q2 === '精品小物') {
+        if (q1.includes('沙灘')) {
+          gift = '香氛或飾品，讓你在陽光下閃耀獨特氣質';
+        } else if (q1.includes('夜景') || q1.includes('咖啡館')) {
+          gift = '一款質感皮件或香水，提升生活的精緻感';
+        } else {
+          gift = '簡約但高雅的項鍊或手錶，象徵彼此的默契';
+        }
+      } else if (q2 === '手作心意') {
+        gift = '一份寫滿心聲的卡片或你們回憶拼貼的相冊';
+      } else if (q2 === '旅行體驗') {
+        gift = '兩人專屬的小旅行，短暫逃離日常的浪漫';
+      } else {
+        gift = '某個只有你們懂的私密小物，藏著愛的細節';
+      }
+
+      if (q3 === '細節的驚喜') {
+        personality = '你在乎對方是否真正「理解」你，而非表面的形式';
+      } else if (q3 === '簡單踏實') {
+        personality = '你渴望的是安心感與日常裡的浪漫餘韻';
+      } else {
+        personality = '你希望感受到被默默放在心上的那份心意';
+      }
+
+      if (q4 === '理解與包容') {
+        growth = '你重視包容和尊重，願意接受彼此的差異與不完美。';
+      } else if (q4 === '浪漫與驚喜') {
+        growth = '你相信浪漫能點亮感情，喜歡生活中充滿驚喜和甜蜜。';
+      } else if (q4 === '溝通與信任') {
+        growth = '你認為坦誠溝通是愛情的基石，信任讓你安心依靠。';
+      } else {
+        growth = '你期待和伴侶一起成長，攜手面對未來的挑戰與夢想。';
+      }
+
+      const resultText = `
+        <h2>💝 測驗結果</h2>
+        <p><strong>你選擇的場景：</strong>${q1}</p>
+        <p><strong>你期待的禮物類型：</strong>${q2}</p>
+        <p><strong>你期望收到禮物時的感覺：</strong>${q3}</p>
+        <p><strong>你認為情侶相處最重要的是：</strong>${q4}</p>
+        <hr />
+        <p>✨ <strong>推薦禮物：</strong>${gift}</p>
+        <p>❤️ <strong>你的浪漫特質：</strong>${personality}</p>
+        <p>🌱 <strong>相處哲學：</strong>${growth}</p>
       `;
 
-      document.getElementById("restart-btn").onclick = () => {
-        currentQ = 0;
-        userTags.length = 0;
-        quizContainer.innerHTML = "";
-        resultContainer.innerHTML = "";
-        resultContainer.classList.add("hidden");
-        showQuestion(currentQ);
-      };
-
-      resultContainer.classList.remove("hidden");
+      document.getElementById('result').innerHTML = resultText;
+      document.getElementById('result').style.display = 'block';
     }
 
-    showQuestion(currentQ);
+    function resetQuiz() {
+      document.getElementById('quizForm').reset();
+      document.getElementById('result').style.display = 'none';
+    }
   </script>
 </body>
 </html>
