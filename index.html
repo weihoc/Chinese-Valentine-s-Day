@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>七夕禮物心理測驗</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #fff8f0; color: #333; }
+    h1, h2 { color: #d26a5c; }
+    .question { margin-bottom: 2em; }
+    button { margin: 10px; padding: 0.5em 1em; background: #d26a5c; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .hidden { display: none; }
+    #restart-btn { margin-top: 3em; background: #888; }
+  </style>
+</head>
+<body>
+  <h1>七夕禮物心理測驗</h1>
+  <div id="quiz"></div>
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const questions = [
+      {
+        text: "1. 你最喜歡以下哪種約會方式？",
+        options: [
+          { text: "一起海邊看夕陽", tags: ["浪漫", "自然"] },
+          { text: "夜市吃吃喝喝", tags: ["活潑", "熱鬧"] },
+          { text: "高級餐廳約會", tags: ["質感", "儀式感"] },
+          { text: "在家煮飯看電影", tags: ["溫馨", "陪伴"] },
+        ],
+      },
+      {
+        text: "2. 收到什麼會最讓你感動？",
+        options: [
+          { text: "花束加手寫卡片", tags: ["浪漫", "真心"] },
+          { text: "精品小物（包包）", tags: ["質感", "實用", "包包"] },
+          { text: "精品小物（香水）", tags: ["質感", "實用", "香水"] },
+          { text: "精品小物（飾品）", tags: ["質感", "實用", "飾品"] },
+          { text: "精品小物（口紅）", tags: ["質感", "實用", "口紅"] },
+          { text: "精品小物（手錶）", tags: ["質感", "實用", "手錶"] },
+          { text: "神秘驚喜行程", tags: ["冒險", "創意"] },
+          { text: "親手做的東西", tags: ["手作", "溫暖"] },
+        ],
+      },
+      {
+        text: "3. 你在意禮物的哪個面向？",
+        options: [
+          { text: "外觀精緻，拍照好看", tags: ["視覺", "美感"] },
+          { text: "表達心意最重要", tags: ["真心", "情感"] },
+          { text: "實用性高，可以每天用", tags: ["實用"] },
+          { text: "讓人驚喜，意想不到", tags: ["創意", "驚喜"] },
+        ],
+      },
+    ];
+
+    const giftIdeas = [
+      { tags: ["浪漫", "真心"], gift: "永生花束＋手寫卡片", place: "山上觀星或海邊夕陽" },
+      { tags: ["質感", "實用", "包包"], gift: "精品包包", place: "高級餐廳約會" },
+      { tags: ["質感", "實用", "香水"], gift: "精品香水", place: "高級餐廳或香氛體驗課程" },
+      { tags: ["質感", "實用", "飾品"], gift: "設計師飾品", place: "藝術展覽或下午茶約會" },
+      { tags: ["質感", "實用", "口紅"], gift: "精品口紅禮盒", place: "百貨專櫃逛街行程" },
+      { tags: ["質感", "實用", "手錶"], gift: "精品手錶", place: "氣氛良好的晚餐+城市夜景散步" },
+      { tags: ["活潑", "創意"], gift: "DIY 驚喜小禮物或密室脫逃票券", place: "夜市或主題樂園" },
+      { tags: ["溫馨", "手作"], gift: "親手做的蛋糕或日常實用小物", place: "家中布置的浪漫晚餐" },
+      { tags: ["視覺", "美感"], gift: "造型香氛蠟燭、手工飾品", place: "網美咖啡廳拍照約會" },
+      { tags: ["驚喜", "冒險"], gift: "神秘約會行程＋電影票＋夜景行程", place: "祕密行程安排" },
+    ];
+
+    const quizContainer = document.getElementById("quiz");
+    const resultContainer = document.getElementById("result");
+    const userTags = [];
+
+    let currentQ = 0;
+
+    function showQuestion(index) {
+      const q = questions[index];
+      const div = document.createElement("div");
+      div.className = "question";
+
+      const h2 = document.createElement("h2");
+      h2.textContent = q.text;
+      div.appendChild(h2);
+
+      q.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+          userTags.push(...opt.tags);
+          currentQ++;
+          quizContainer.innerHTML = "";
+          if (currentQ < questions.length) {
+            showQuestion(currentQ);
+          } else {
+            showResult();
+          }
+        };
+        div.appendChild(btn);
+      });
+
+      quizContainer.appendChild(div);
+    }
+
+    function showResult() {
+      const tagCount = {};
+      userTags.forEach((tag) => {
+        tagCount[tag] = (tagCount[tag] || 0) + 1;
+      });
+
+      const best = giftIdeas
+        .map((idea) => {
+          let score = 0;
+          idea.tags.forEach((tag) => {
+            score += tagCount[tag] || 0;
+          });
+          return { ...idea, score };
+        })
+        .sort((a, b) => b.score - a.score)[0];
+
+      resultContainer.innerHTML = `
+        <h2>🎁 最適合她的七夕禮物是：</h2>
+        <p><strong>禮物建議：</strong>${best.gift}</p>
+        <p><strong>推薦約會地點：</strong>${best.place}</p>
+        <p style="margin-top:2em;color:#666">（根據她的選擇分析得出）</p>
+        <button id="restart-btn">重新來過</button>
+      `;
+
+      document.getElementById("restart-btn").onclick = () => {
+        currentQ = 0;
+        userTags.length = 0;
+        quizContainer.innerHTML = "";
+        resultContainer.innerHTML = "";
+        resultContainer.classList.add("hidden");
+        showQuestion(currentQ);
+      };
+
+      resultContainer.classList.remove("hidden");
+    }
+
+    showQuestion(currentQ);
+  </script>
+</body>
+</html>
